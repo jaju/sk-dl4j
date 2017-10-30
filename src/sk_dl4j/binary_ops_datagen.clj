@@ -1,4 +1,6 @@
-(ns sk-dl4j.binary-ops-datagen)
+;; Helper namespace to generate sample data. For one-off uses.
+(ns sk-dl4j.binary-ops-datagen
+  (:require [clojure.data.csv :as csv]))
 
 (defn round-off [^double n]
   (Math/round n))
@@ -41,11 +43,29 @@
 (defn an-or-sample []
   (binary-op-sample or))
 
-(defn xor-sample-stream []
+(defn xor-sample-stream-fn []
   (repeatedly an-xor-sample))
 
-(defn and-sample-stream []
+(defn and-sample-stream-fn []
   (repeatedly an-and-sample))
 
-(defn or-sample-stream []
+(defn or-sample-stream-fn []
   (repeatedly an-or-sample))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmacro dump-to-csv-file
+  "Given a stream function, returning N-tuples, `take` suggested number of entries and save them as CSV to the
+  supplied file-path."
+  [stream-fn outfile num-data]
+  `(with-open [out# (clojure.java.io/writer ~outfile)]
+     (csv/write-csv out# (take ~num-data (~stream-fn)))))
+
+(defn write-xor-sample [outfile num-data]
+  (dump-to-csv-file xor-sample-stream-fn outfile num-data))
+
+(defn write-and-sample [outfile num-data]
+  (dump-to-csv-file and-sample-stream-fn outfile num-data))
+
+(defn write-or-sample [outfile num-data]
+  (dump-to-csv-file or-sample-stream-fn outfile num-data))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
