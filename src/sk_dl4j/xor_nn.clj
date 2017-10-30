@@ -1,3 +1,4 @@
+;; Inspired by https://github.com/deeplearning4j/dl4j-examples/blob/master/dl4j-examples/src/main/java/org/deeplearning4j/examples/feedforward/xor/XorExample.java
 (ns sk-dl4j.xor-nn
   (:import [java.io File]
            [org.nd4j.linalg.activations Activation]
